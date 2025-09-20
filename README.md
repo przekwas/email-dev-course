@@ -22,7 +22,7 @@ How to design for all clients at once?
 - By using `padding` *instead* of `margin` for email compatability
 - Test, Test, Test
 
-[[text](https://www.litmus.com/email-client-market-share)](https://www.litmus.com/email-client-market-share)
+[https://www.litmus.com/email-client-market-share](https://www.litmus.com/email-client-market-share)
 
 ## HTML Stuffs
 
@@ -49,4 +49,60 @@ How to design for all clients at once?
 - HTML emails must link to urls directly online
   - no relative file paths!!
   - SEO can be done on web via filename, title, and alt text
-  - 
+
+- `<textarea>` cols size is based on base font size
+  - e.g. `cols="10"` means it'll fit 10 (default 16px) characters across
+  - `rows="3"` means it can fit 3 rows of text
+
+## CSS Stuffs
+
+- Font Family
+  - Fallback Fonts separated by commas 
+  - `Brush Script MT, cursive;` your cursive font family
+    - not used much
+- 400 font weight typically used for body text
+- `letter-spacing` nice for styling headings a bit
+  
+- Pixels (px) are best for email design and layout
+- Hex colors are best for email
+
+- gradients still not the best in email dev but there are tricks you can do
+  - always do a `background-color` *and* a `liner-gradient()` to make sure you got fallbacks
+    - same for a `background-image: url()`
+
+- `background-image` behaviors 
+  - `background-repeat: no-repeat'` to toggle off default behaviour, and our fallback `background-color` will extend beyond if it's not repeated so a good trick to match the colors if you can
+  - `background-position: center;` 
+  - `background-attachment: fixed;` fixed for "window" effect as you scroll by
+    - value `scroll` is the default aka it scrolls by
+
+- `box-shadow` has 4 vals
+  - first is horitonzal value
+  - second is vertical value
+  - third is blur radius
+  - fourth is the color
+
+- `<a>` pseudo classes order LVHA
+  - `L` a:link
+  - `V` a:visited
+  - `H` a:hover
+  - `A` a:active
+  - for "button" styling add `inset` to the :active pseudo class to make it look like it was clicked into the page
+    - also adjust box shadow opacity on pseudo states to give more life to the button styling
+
+- Stacked Icons are a go-to
+
+- `content-box` does not include borders in sizing/width of elements
+  - `border-box` does include them
+
+- Media Queries
+  - `@media screen and (max-width: 768px) {}`
+    - apply styles on a screen up 768px screen width and then stop
+  - **600px template typically in email** is the most common, so only 1 or 2 media queries needed
+
+## Email Testing Services
+
+- Email Service Provider Platforms (i.e. MailChimp)
+- CAN-SPAM, CASL & GDPR Laws (address and unsubscribe)
+- Email Deliverability (to avoid ending up in spam)
+- Merge Tags in ESps (i.e. subscriber first name)
