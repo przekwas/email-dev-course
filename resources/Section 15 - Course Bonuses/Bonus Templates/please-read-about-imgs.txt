@@ -1,0 +1,3 @@
+The images for the bonus templates are includes within the /img/ folder. Each template has its own folder there (i.e. img/template-7/).
+
+To see the images display in the email inbox, the images need to be uploaded to the web like we did in the main course project using an ESP (Email Service Provider) such as MailChimp.

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>CSS Sizing</title>
+   <style>
+   html {
+      font-size: 24px;
+   }
+   .element {
+      font-size: 32px;
+      border-top: 1px solid;
+   }
+   </style>
+</head>
+<body>
+
+   <h4>The root element is the HTML document or HTML tag itself. REM stands for Root Emement while EM stands for element. This heading 4 is the same size as the root font size.</h4>
+
+   <p>This is 24px.</p>
+   <p style="font-size: 100%;">This is 100%.</p>
+   <p style="font-size: 1rem;">This is 1rem.</p>
+   <p style="font-size: 1em;">This is 1em.</p>
+
+   <div class="element">
+      <p>This is 24px.</p>
+      <p style="font-size: 100%;">This is 100%.</p>
+      <p style="font-size: 1rem;">This is 1rem.</p>
+      <p style="font-size: 1em;">This is 1em.</p>
+      <p style="font-size: larger;">Predefined</p>
+   </div>
+
+</body>
+</html>

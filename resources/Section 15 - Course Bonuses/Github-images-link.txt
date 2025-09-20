@@ -1,0 +1,4 @@
+All of the live course bonus image links can be found at:
+https://github.com/w3newbie/html-email-mastery-images/tree/main/bonus-img
+
+Please see Lesson #6 (towards the end of the video) where it shows you how you can copy the live Github image URLs.

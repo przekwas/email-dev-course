@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>CSS Media Queries</title>
+   <style>
+   * {
+      box-sizing: border-box;
+   }
+   body {
+      margin: 0;
+   }
+   #first {
+      width: 49%;
+      height: 100px;
+      background-color: blue;
+      float: left;
+      margin: .5%;
+      border: 3px solid gray;
+   }
+   #second {
+      width: 49%;
+      height: 100px;
+      background-color: green;
+      float: left;
+      margin: .5%;
+      border: 3px solid gray;
+   }
+   @media screen and (max-width: 992px) {
+      #first, #second {
+         opacity: .7;
+         width: 80%;
+         margin: 1% 10%;
+      }
+   }
+   @media screen and (max-width: 768px) {
+      #first, #second {
+         opacity: .4;
+         width: 98%;
+         margin: 2% 1%;
+      }
+   }
+   </style>
+</head>
+<body>
+
+   <div id="first"></div>
+   <div id="second"></div>
+
+</body>
+</html>

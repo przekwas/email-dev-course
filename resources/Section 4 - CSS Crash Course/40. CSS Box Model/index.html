@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>CSS Box Model</title>
+   <style>
+   body {
+      margin: 0;
+   }
+   #red {
+      background-color: red;
+      border: 2px solid black;
+      padding: 20px;
+      padding-bottom: 40px;
+      margin: 50px;
+      margin-top: 10px;
+   }
+   #green {
+      background-color: green;
+      border: 2px solid black;
+      padding-top: 20px;
+      padding-right: 80px;
+      padding-left: 80px;
+      margin-top: 10px;
+      margin-right: 30px;
+      margin-bottom: 20px;
+   }
+   /* top right bottom left */
+   /* top right/left bottom */
+   /* top/bottom right/left */
+   #blue {
+      background-color: blue;
+      border: 2px solid black;
+      padding: 25px 50px;
+      margin: 30px 50px;
+   }
+   p {
+      background-color: white;
+      margin: 0;
+   }
+   </style>
+</head>
+<body>
+
+   <div id="red">
+      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt soluta reiciendis delectus veniam nisi, placeat sed animi officiis, modi omnis eligendi tempore vero accusantium? Corporis molestias ipsa perspiciatis commodi dicta.</p>
+   </div>
+
+   <div style="width: 100%; background-color: black; padding: 1px;"></div>
+
+   <div id="green">
+      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt soluta reiciendis delectus veniam nisi, placeat sed animi officiis, modi omnis eligendi tempore vero accusantium? Corporis molestias ipsa perspiciatis commodi dicta.</p>
+   </div>
+
+   <div style="width: 100%; background-color: black; padding: 1px;"></div>
+
+   <div id="blue">
+      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt soluta reiciendis delectus veniam nisi, placeat sed animi officiis, modi omnis eligendi tempore vero accusantium? Corporis molestias ipsa perspiciatis commodi dicta.</p>
+   </div>
+
+   <div style="width: 100%; background-color: black; padding: 1px;"></div>
+
+</body>
+</html>

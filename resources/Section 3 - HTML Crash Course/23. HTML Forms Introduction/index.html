@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>HTML Forms Introduction</title>
+</head>
+<body>
+
+   <p>The HTML 'form' tag is used to create a form where data or information can be collected once submitted by a website visitor.</p>
+   <p>In order to submit the form, a back-end action needs to be connected to the form to process the data.</p>
+   <p>An example of this would be a PHP (Hypertext Preprocessor) script in a seperate file. For example: 'contact.php' as the file name and type.</p>
+   <p>While connecting to the file there are two main methods: GET & POST.</p>
+   <p>GET is the default method and would be used to process the data and get information that is already stored somewhere. Like with Google Search, once you submit your search you will see the info you submitted in the search bar and it will return data relative to the info submitted.</p>
+   <p>The POST method is used to instert, upload, or update data. This could mean submitting information in a contact form on a website or submitting your credit card at checkout.</p>
+   <p>The POST method is more secure as it doesn't save or cache any information in the browser, nor does it change the URL like with the GET method and it can't be bookmarked.</p>
+
+   <form action="contact.php" method="get">
+       <!-- Get Method -->
+   </form>
+
+   <form action="contact.php" method="post">
+       <!-- Post Method -->
+   </form>
+
+</body>
+</html>

@@ -1,0 +1,17 @@
+Visual Studio Code: https://code.visualstudio.com/
+
+Shortcuts: https://code.visualstudio.com/docs/getstarted/keybindings
+
+(Code > Preferences > Keyboard Shortcuts, ⌘K ⌘S MACOS,  Ctrl+K Ctrl+S  WINDOWS)
+
+
+Extension I Use:
+
+Live Server: https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer
+
+____
+
+
+Emmet in VSCode: https://code.visualstudio.com/docs/editor/emmet
+
+Emmet Cheat Sheet: https://docs.emmet.io/cheat-sheet/
