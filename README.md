@@ -542,7 +542,62 @@ How to design for all clients at once?
     -   `[data-ogsc] .darkmode-transparent { background-color:transparent !important; }`
         -   Same transparent override, but scoped for Outlook web/app
 
--   Best practice:
-    -   Always set both a light and dark background color (fallback + override)
-    -   Repeat critical overrides with `[data-ogsc]` selectors for Outlook.com
-    -   Test in Apple Mail, Gmail app, and Outlook web to see how your styles invert or apply
+## Extra Best Practices & Gotchas
+
+-   Always set **both light and dark backgrounds** (fallback + override)
+
+    -   Use `[data-ogsc]` selectors for Outlook.com dark mode
+    -   Test in Apple Mail, Gmail app, and Outlook web since each inverts differently
+
+-   **No dead links** — even in testing
+
+    -   Email on Acid and some clients will break previews if `href="#"` or empty URLs are used
+    -   Always point to a real endpoint (can be dummy but valid)
+
+-   **Images require both** inline style and attribute for cross-client rendering
+
+    -   Example:  
+        `<img src="example.jpg" width="600" style="width:100%; max-width:600px; height:auto; display:block;" alt="..." />`
+    -   `width` attribute = makes images render in Outlook
+    -   `style="width:100%;"` = makes them responsive on mobile/webmail
+
+-   **Unique links per instance**
+
+    -   Helps testing/tracking — some clients merge duplicate links in previews/clicks
+
+-   Inline styles on every element
+
+    -   Don’t rely on inheritance — add `font-size`, `line-height`, `color`, etc. directly
+    -   Especially for headers `<h1>`–`<h6>`, `<p>`, and `<td>` content
+
+-   Anchors inside `<p>`?
+
+    -   Often safer to wrap `<a>` in `<p>` for consistent spacing across clients
+    -   Prevents inline anchor text from breaking line-height or margins
+
+-   Links showing blue randomly?
+
+    -   Fix with both:  
+        `style="color:#3d3d3d; color:inherit; text-decoration:none;"`
+    -   The `inherit` lets it pick up parent `<p>` styles and kills auto-blue styling
+
+-   Stop auto-linking addresses
+
+    -   Insert invisible zero-width space: `&#8203;`
+    -   Example: `123&#8203; Street Road, City, State 55555`
+    -   Prevents Apple Mail/iOS from turning addresses into blue links
+
+-   Image responsiveness
+    -   Always use **both attribute + inline style**
+    -   `width="600"` → Outlook desktop needs it  
+        `style="width:100%;"` → responsive in mobile/web clients
+    -   Add `height:auto; display:block;` for proper scaling + removing default gaps
+
+## Responsive Table Layouts for Email Columns
+
+-   fixed: multiple columns but not mobile friendly
+-   scalable: single column, the same across devices
+-   fluid: a single column typically with a lot of text and it flexes content based on device width
+-   hybrid: multiple columns with fixed widths but tables adjust/collapse based on screen size
+-   fluid-hybrid/responsive: multiple columns which collpase based on screen size and use responsive/fluid css styling with media queries in clients allowing it
+
