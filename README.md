@@ -308,6 +308,7 @@ How to design for all clients at once?
     -   This enforces a safe fallback stack
 
 -   `table { ... }`
+
     -   `border-spacing: 0 !important;`  
         Prevents extra gaps between table cells (needed even though you collapse elsewhere)
     -   `border-collapse: collapse !important;`  
@@ -318,3 +319,230 @@ How to design for all clients at once?
         Outlook-specific property — locks line height so text doesn’t stretch
     -   `mso-table-lspace: 0pt !important; mso-table-rspace: 0pt !important;`  
         Removes default left/right table cell padding in Outlook (it adds invisible spacing otherwise)
+
+## Containing Divs, Inline Styling, Redundancy, and Fallbacks
+
+-   `<body class="body" xml:lang="en" style="margin:0; padding:0; min-width:100%; background-color:#dde0e1">`
+
+    -   `margin:0; padding:0;` = strips default browser spacing
+    -   `min-width:100%;` = makes sure background spans full viewport
+    -   `background-color:#dde0e1;` = fallback gray background for clients that ignore container styles
+    -   `xml:lang="en"` = alternate language declaration (used in some XML-based parsers and screen readers)
+
+-   Outer `<div style="width:100%; table-layout:fixed; background-color:#dde0e1; ...">`
+
+    -   Acts as the "real body" wrapper since not all clients respect `<body>` styles
+    -   `table-layout:fixed;` = stabilizes rendering in table-heavy layouts
+    -   `color`, `font-family`, `font-size` repeated here → redundancy on purpose so Outlook / Gmail / Yahoo don’t override
+    -   `margin:0 auto 40px;` = centers content block and adds spacing at bottom
+
+-   Inner `<div style="max-width:600px; background-color:#fafdfe; ...">`
+    -   The main content container (max width = standard 600px email template)
+    -   `margin:0 auto;` = centers this container horizontally
+    -   `background-color:#fafdfe;` = white-ish fallback so text is readable even if outer bg fails
+    -   `font-family` + `font-size` repeated → ensures copy renders correctly even if parent style is stripped
+    -   `box-shadow:0 0 10px rgba(0,0,0,0.2);` = decorative; supported in some modern clients but gracefully ignored elsewhere
+    -   Fallback philosophy: repeat essential styles (color, font, bg) at multiple levels so if one client drops outer CSS, the inner container still looks okay
+
+## Preheader Text / Preview Text
+
+-   Preheader = the little preview line of text that shows up in inboxes next to/under the subject line
+
+    -   Typically **35–190 characters**, sweet spot is **85–100 characters**
+    -   Acts as a "second subject line" → boosts open rates
+
+-   `<div style="font-size:0; color:#fafdfe; ... display:none; ...">`
+
+    -   Hidden text block for preheader content
+    -   Styled to be invisible in the actual email body:
+        -   `font-size:0; line-height:0px; max-width:0; max-height:0; opacity:0; overflow:hidden; display:none;`
+        -   `mso-hide:all;` = hides from Outlook desktop
+        -   `color:#fafdfe;` = matches background color in case client ignores `display:none`
+
+-   Why all the random HTML entities (`&zwnj; &nbsp; &#847;` etc)?
+
+    -   They act as **padding text** so the real email content doesn’t leak into the inbox preview
+    -   Different inboxes (Gmail, Outlook, Apple Mail) will sometimes pull in extra characters if your preheader is too short
+    -   Adding invisible junk characters pushes your real email body out of preview range
+
+-   Best practice:
+    -   Always include a preheader for marketing or transactional emails
+    -   Hide it from the design but keep it in code
+    -   Fill the rest of the space with invisible entities so only your curated text is previewed
+
+## Tables in Email Templates
+
+-   Tables = the backbone of email layout (because `<div>` support is trash in Outlook)
+-   Old-school way:
+
+    ```html
+    <table
+    	border="1"
+    	cellspacing="0"
+    	cellpadding="0"
+    >
+    	<tr>
+    		<td>Cell 1</td>
+    	</tr>
+    </table>
+    ```
+
+    -   `border="1"` = adds a 1px border (default browser style, not flexible)
+    -   `cellspacing="0"` = removes spacing between cells
+    -   `cellpadding="0"` = removes padding inside each `<td>`
+    -   ✅ Works everywhere but dated / attribute-heavy
+
+-   Modern CSS way:
+
+    ```html
+    <table style="border-collapse: collapse">
+    	<tr>
+    		<td style="padding: 0">Cell 1</td>
+    	</tr>
+    </table>
+    ```
+
+    -   `border-collapse: collapse;` = cells share borders, no spacing between them
+    -   `padding: 0;` = replaces `cellpadding="0"`
+    -   Cleaner → relies on CSS instead of HTML attributes
+
+-   Why CSS solution is preferred:
+    -   More consistent with web standards
+    -   Easier to manage styling inline
+    -   Avoids mixing presentational attributes (`cellpadding`, `cellspacing`) with structure
+    -   Still fully supported in Outlook and other picky clients
+
+## Main Template Table
+
+-   `<table align="center" role="presentation" ...>`
+
+    -   `align="center"` = legacy way to center tables (still respected by Outlook)
+    -   `role="presentation"` = accessibility → signals to screen readers that the table is for layout, not data
+
+-   `style="border-spacing:0; border-collapse:collapse; ..."`
+
+    -   `border-spacing:0; border-collapse:collapse;`
+        -   Prevents gaps/borders between table cells
+        -   Outlook-safe reset
+    -   `color:#3d3d3d; font-family:Arial, Helvetica, sans-serif; font-size:16px;`
+        -   Redundancy → sets default text styling for the whole email
+        -   Ensures consistent fallback when inline styles are stripped
+    -   `background-color:#fafdfe;`
+        -   Default white background for main content area
+        -   Matches common email designs
+    -   `margin:0 auto;`
+        -   Centers table in client window
+    -   `padding:0;`
+        -   Prevents unintended spacing around table (important in Outlook)
+    -   `width:100%; max-width:600px;`
+        -   Forces full width on mobile while capping design at **600px**
+        -   Standard practice for responsive email templates
+
+-   ⚖️ Best practice:
+    -   Main template table = **600px max-width, centered, role="presentation"**
+    -   Use padding on **nested tables** or cells for spacing — keep outer container stripped to zero padding for control
+    -   Inline styles for every nested element, since some clients ignore global CSS
+
+## Outlook “Ghost Table” Wrapper
+
+-   Why this exists
+
+    -   Outlook (Word engine) ignores `max-width` on the main table and can break centering.
+    -   A **ghost table** inside an `<!--[if mso]> ... <![endif]-->` block gives Outlook a fixed **600px** container without affecting mobile clients.
+
+-   Structure recap
+
+    ```html
+    <!--[if mso]>
+      <table width="600" align="center" role="presentation" style="border-spacing:0; border-collapse:collapse; color:#3d3d3d">
+        <tr><td style="padding:0">
+    <![endif]-->
+
+    <table
+    	align="center"
+    	role="presentation"
+    	style="border-spacing:0; border-collapse:collapse; color:#3d3d3d; font-family:Arial, Helvetica, sans-serif; font-size:16px; background-color:#fafdfe; margin:0 auto; padding:0; width:100%; max-width:600px;"
+    >
+    	<tr>
+    		<td style="padding:0">
+    			<table
+    				width="100%"
+    				role="presentation"
+    				style="border-spacing:0"
+    			>
+    				<tr>
+    					<td style="padding:10px; background-color:#c0c0ff">
+    						<h1 style="text-align:center; font-size:30px; margin:0">This is some text.</h1>
+    					</td>
+    				</tr>
+    			</table>
+    		</td>
+    	</tr>
+    </table>
+
+    <!--[if mso]>
+        </td></tr></table>
+    <![endif]-->
+    ```
+
+-   Key points
+
+    -   `<!--[if mso]> ... <![endif]-->`  
+        Outlook-only wrapper. Mobile/webmail clients don’t see it, so they use the responsive `width:100%; max-width:600px;` table instead.
+    -   `width="600"` on the ghost table  
+        Use the HTML attribute for Outlook reliability (attributes tend to win over CSS in Word).
+    -   `align="center"` on the ghost table  
+        Legacy centering Outlook still respects.
+    -   **Do content inside inner rows**  
+        Keep the outer responsive table’s first `<td>` clean and put actual content in a nested 100%-width table → avoids spacing/line-height quirks in Outlook/Gmail.
+    -   `role="presentation"`  
+        Accessibility hint: this is layout, not data.
+    -   `border-spacing:0; border-collapse:collapse;`  
+        Reduces gaps/borders across clients (especially Outlook).
+    -   Padding strategy  
+        Put padding on **inner `<td>`s** (like your `padding:10px` cell), not on the outer container, for predictable spacing everywhere.
+
+-   Common pitfalls (and fixes)
+
+    -   **Mobile squish or overflow**  
+        Ensure the responsive table has `width:100%; max-width:600px;` and that images use `display:block; max-width:100%; height:auto;`.
+    -   **Unexpected gaps between rows**  
+        Confirm `line-height` on text elements and avoid empty `\n` text nodes between table tags (minify/inline tidy).
+    -   **Double padding**  
+        Don’t add padding on both the outer `<td>` and the inner content cell—pick one (inner cell).
+
+-   TL;DR
+    -   Ghost table = fixed 600px for Outlook only.
+    -   Responsive table = `width:100%` + `max-width:600px` for everyone else.
+    -   Nest content rows inside a 100% inner table; pad those cells, not the outer frame.
+
+## Dark Mode Support
+
+-   `:root { color-scheme: light dark; supported-color-schemes: light dark; }`
+
+    -   Declares to clients (Apple Mail, iOS Mail, some modern apps) that your email supports **light and dark mode**
+    -   Important: the `s` in `supported-color-schemes` is required
+    -   Not all clients respect this, but it helps prevent forced color inversions
+
+-   `@media (prefers-color-scheme: dark) { ... }`
+
+    -   Modern CSS media query for users who have dark mode enabled
+    -   Supported in Apple Mail, iOS Mail, some Android apps — **not Outlook desktop**
+
+-   Inside dark mode query:
+
+    -   `body, table { background:#2d2d2d !important; color:#ffffff !important; }`
+        -   Forces dark background + light text
+        -   `!important` needed because inline styles win otherwise
+    -   `.darkmode-transparent { background-color:transparent !important; }`
+        -   Utility class → lets specific sections stay transparent even in dark mode
+    -   `[data-ogsc] body, table { ... }`
+        -   `[data-ogsc]` = **Outlook.com (webmail) + Outlook apps hack**
+        -   Ensures dark mode styles apply in those clients
+    -   `[data-ogsc] .darkmode-transparent { background-color:transparent !important; }`
+        -   Same transparent override, but scoped for Outlook web/app
+
+-   Best practice:
+    -   Always set both a light and dark background color (fallback + override)
+    -   Repeat critical overrides with `[data-ogsc]` selectors for Outlook.com
+    -   Test in Apple Mail, Gmail app, and Outlook web to see how your styles invert or apply

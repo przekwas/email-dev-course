@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html
+	lang="en"
+	dir="ltr"
+	xmlns:v="urn:schemas-microsoft-com:vml"
+	xmlns:o="urn:schemas-microsoft-com:office:office"
+>
+	<head>
+		<meta
+			http-equiv="Content-Type"
+			content="text/html; charset=utf-8"
+		/>
+		<meta
+			http-equiv="X-UA-Compatible"
+			content="IE=edge"
+		/>
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, user-scalable=yes"
+		/>
+		<meta
+			name="format-detection"
+			content="telephone=no, date=no, address=no, email=no, url=no"
+		/>
+		<meta name="X-apple-disable-message-reformatting" />
+		<meta
+			name="color-scheme"
+			content="light dark"
+		/>
+		<meta
+			name="supported-color-schemes"
+			content="light dark"
+		/>
+
+		<title>HTML Email Template Boilerplate</title>
+
+		<!-- only applied to windows outlook -->
+		<!-- DPI scaling issue in Outlook 2007-2013 on high res screens or adjusting settings for eyesight -->
+		<!-- The 96 characters from showing up in an email client called T-Online  -->
+
+		<!--[if mso]>
+			<noscript>
+				<xml>
+					<o:OfficeDocumentSettings>
+						<o:PixelsPerInch>96</o:PixelsPerInch>
+					</o:OfficeDocumentSettings>
+				</xml>
+			</noscript>
+		<![endif]-->
+		<style type="text/css">
+			/* This is added as a fallback or redundancy if a client can handle internal css otherwise we do inline :cry: */
+			table {
+				border-spacing: 0;
+				border-collapse: collapse;
+			}
+			td {
+				padding: 0;
+			}
+			p {
+				font-size: 16px;
+			}
+			img {
+				border: 0;
+				/* display:block or line-height:0 in some cases to help stack images and shit */
+			}
+			a {
+				text-decoration: none;
+				color: #3d3d3d;
+				font-size: 16px;
+			}
+			.content {
+				/* custom class for learning, not a requirement */
+				/* just set off our content if needed */
+				line-height: 20px;
+				font-size: 16px;
+			}
+
+			.ExternalClass {
+				width: 100%;
+			}
+			.ExternalClass,
+			.ExternalClass p,
+			.ExternalClass span,
+			.ExternalClass font,
+			.ExternalClass td,
+			.ExternalClass div {
+				/* Outlook problem */
+				/* Wrap and center to take up all width/space we can work with */
+				line-height: 100%;
+			}
+
+			a[x-apple-data-detectors='true'] {
+				/* Outlook needs !important with a leading space smh */
+				color: inherit !important;
+				text-decoration: inherit !important;
+			}
+
+			/* The decimals are fluid hybrid responsive approach */
+			/* 600px */
+			@media screen and (max-width: 599.98px) {
+			}
+
+			/* 400px */
+			@media screen and (max-width: 399.98px) {
+			}
+
+			:root {
+				color-scheme: light dark;
+				/* this s in schemes needed */
+				supported-color-schemes: light dark;
+			}
+
+			/* this one isn't */
+			@media (prefers-color-scheme: dark) {
+				body,
+				table {
+					background: #2d2d2d !important;
+					color: #ffffff !important;
+				}
+				.darkmode-transparent {
+					background-color: transparent !important;
+				}
+				[data-ogsc] body,
+				table {
+					background: #2d2d2d !important;
+					color: #ffffff !important;
+				}
+				[data-ogsc] .darkmode-transparent {
+					background-color: transparent !important;
+				}
+			}
+		</style>
+
+		<!-- In table, line-height isn't always needed -->
+		<!-- MSO specific stuffs \/ (Outlook pt is basically interchangeable with px) -->
+		<!-- mso-line-height-rule: exactly !important; -->
+		<!-- mso-table-lspace: 0pt !important; -->
+		<!-- mso-table-rspace: 0pt !important; -->
+
+		<!--[if mso]>
+			<style type="text/css">
+				body {
+					background-color: #dde0e1 !important;
+				}
+				body,
+				table,
+				td,
+				p,
+				a {
+					font-family: Arial, Helvetica, sans-serif !important;
+				}
+				table {
+					border-spacing: 0 !important;
+					border-collapse: collapse !important;
+					line-height: 100% !important;
+					mso-line-height-rule: exactly !important;
+					mso-table-lspace: 0pt !important;
+					mso-table-rspace: 0pt !important;
+				}
+			</style>
+		<![endif]-->
+	</head>
+	<body
+		class="body"
+		xml:lang="en"
+		style="margin: 0; padding: 0; min-width: 100%; background-color: #dde0e1"
+	>
+		<!-- acting as our "body" -->
+		<div
+			style="
+				width: 100%;
+				table-layout: fixed;
+				background-color: #dde0e1;
+				color: #3d3d3d;
+				font-family: Arial, Helvetica, sans-serif;
+				font-size: 16px;
+				margin: 0 auto 40px;
+			"
+		>
+			<!-- color here is w/e our design needs -->
+			<!-- this may seem redundant but added to main containing elements cause email clients suck -->
+			<div
+				style="
+					max-width: 600px;
+					background-color: #fafdfe;
+					color: #3d3d3d;
+					font-family: Arial, Helvetica, sans-serif;
+					font-size: 16px;
+					box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+					margin: 0 auto;
+				"
+			>
+				<!-- Preheader Text or Preview Text -->
+				<!-- Doesn't show up in email -->
+				<!-- the random entities are to push our content out from the preview -->
+				<div
+					style="
+						font-size: 0;
+						color: #fafdfe;
+						mso-line-rule: exactly;
+						line-height: 0px;
+						display: none;
+						max-width: 0;
+						max-height: 0;
+						opacity: 0;
+						overflow: hidden;
+						mso-hide: all;
+					"
+				>
+					This is our preheader text which can be 35-190 characters but 85-100 characters is recommended.
+					&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;
+				</div>
+
+				<!-- omg this is a new fucking table for goddamn Outlook -->
+				<!-- but this fucks mobile clients so we add a mso conditional -->
+				<!-- ghost table -->
+				<!--[if mso]>
+				<table
+					width="600"
+					align="center"
+					role="presentation"
+					style="border-spacing: 0; border-collapse: collapse; color: #3d3d3d"
+				>
+				<tr>
+				<td style="padding: 0">
+				<![endif]-->
+
+				<!-- main template table for learning and the course on udemy -->
+				<!-- padding 0 to main table but not nested tables -->
+				<table
+					align="center"
+					role="presentation"
+					style="
+						border-spacing: 0;
+						border-collapse: collapse;
+						color: #3d3d3d;
+						font-family: Arial, Helvetica, sans-serif;
+						font-size: 16px;
+						background-color: #fafdfe;
+						margin: 0 auto;
+						padding: 0;
+						width: 100%;
+						max-width: 600px;
+					"
+				>
+					<tr>
+						<!-- do not start adding content into the first td as it fucks with the rest -->
+						<!-- so strip down a new tr, td, and table -->
+						<!-- each row of columns this is needed? -->
+						<td style="padding: 0">
+							<table
+								width="100%"
+								role="presentation"
+								style="border-spacing: 0"
+							>
+								<tr>
+									<td style="padding: 10px">
+										<h1 style="text-align: center; font-size: 30px; margin: 0">
+											This is some text.
+										</h1>
+										<h2 style="text-align: center; font-size: 26px; margin: 0">
+											This is some text.
+										</h2>
+										<h3 style="text-align: center; font-size: 22px; margin: 0">
+											This is some text.
+										</h3>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+
+				<!--[if mso]>
+					</td>
+					</tr>
+					</table>
+				<![endif]-->
+			</div>
+		</div>
+	</body>
+</html>
