@@ -601,3 +601,235 @@ How to design for all clients at once?
 -   hybrid: multiple columns with fixed widths but tables adjust/collapse based on screen size
 -   fluid-hybrid/responsive: multiple columns which collpase based on screen size and use responsive/fluid css styling with media queries in clients allowing it
 
+-   <td class="column-wrapper" style="padding: 0; font-size: 0;">
+      -   wraps the two tables in a 2 col layout for example
+      -   the font-size 0 is a trick to make the columns display inline next to each other
+
+## Responsive Two-Column Pattern (Fluid-Hybrid)
+
+-   **Pattern goal**
+
+    -   Two columns on desktop (600px container → ~300px each), automatic **stacking on mobile** without needing media queries.
+    -   Works via `display:inline-block` + `width:100%` + `max-width:300px`.
+
+-   **Wrapper row**
+
+    -   `<td class="column-wrapper" style="padding:0; font-size:0; background-color:#b7c0ba">`
+        -   `font-size:0` kills the whitespace that appears between inline-block columns.
+        -   Put **all inter-column spacing inside child cells** (padding) so mobile stacks cleanly.
+
+-   **Each column table**
+
+    -   `class="column column-one-half" width="100%" role="presentation"`
+    -   Inline styles:
+        -   `display:inline-block;` → sit side-by-side when space allows.
+        -   `width:100%; max-width:300px;` → each column caps at 300px inside a 600px container, but becomes 100% on narrow screens (stacks).
+        -   `vertical-align:top;` → prevents bottom alignment oddities when columns have different heights.
+        -   Background & text colors may be repeated here for **redundancy** across clients.
+
+-   **Gutters / spacing**
+
+    -   Prefer **padding on inner `<td>`** (e.g., `padding:20px`) instead of margins (margin support is spotty).
+    -   If you need a visible gap **between** columns, use:
+        -   Extra padding on the left/right inner cells, or
+        -   A thin spacer column (3-10px) as another inline-block table (older pattern).
+
+-   **Images inside columns**
+
+    -   Wrap in an anchor for tappable area.
+    -   Use **attribute + inline CSS** for cross-client sizing:
+        -   `<img width="260" style="width:100%; max-width:260px; height:auto; display:block; border:0" ... />`
+    -   Always include `alt` (and `title` if desired).
+
+-   **Headings / copy**
+
+    -   Inline all key text styles (`font-size`, `line-height`, `color`, `text-align`) on each element (`<h1>…</h1>`, `<p>…</p>`).
+    -   Set `margin:0` on headings to avoid mystery whitespace across clients.
+
+-   **Accessibility**
+
+    -   `role="presentation"` on layout tables.
+    -   Meaningful `alt` text; avoid using images of text where possible.
+    -   Keep reading order logical (see “stacking order” below).
+
+-   **Stacking order (mobile)**
+
+    -   This fluid-hybrid pattern stacks columns in **source order** (left column first).
+    -   To reverse on mobile without media queries, wrap the two column tables in a parent with `dir="rtl"` and give each column `dir="ltr"` (advanced pattern). Otherwise, control order by HTML source.
+
+-   **Outlook gotchas**
+
+    -   The overall 600px container should already be inside the **ghost table** for Outlook desktop.
+    -   Keep column padding on inner `<td>` elements; avoid padding on the outer container `<td>` to reduce Outlook spacing bugs.
+
+-   **Optional media query refinements**
+
+    -   You can still add:
+        ```css
+        @media screen and (max-width: 599.98px) {
+        	.column {
+        		max-width: 100% !important;
+        	}
+        	.padding {
+        		padding: 16px !important;
+        	}
+        	.column h1,
+        	.column p {
+        		font-size: larger !important;
+        		line-height: 1.4 !important;
+        	}
+        }
+        ```
+        for extra polish in clients that support media queries.
+
+-   **TL;DR**
+    -   `font-size:0` on the **wrapper** td to remove inline-block gaps.
+    -   Each **column** = `display:inline-block; width:100%; max-width:300px; vertical-align:top;`.
+    -   Put spacing in **inner cell padding**; inline all critical text/image styles.
+
+#### SIMPLE TWO COLUMNS — REVERSED (DIR TRICK)
+
+-   **What this does**
+
+    -   Add `dir="rtl"` to the **wrapper td** → inline‐block columns render **right→left**, so the _second_ column appears first on desktop.
+    -   Add `dir="ltr"` to any **textual column/table** so Latin text reads normally (prevents punctuation mirroring and bidi quirks).
+
+-   **Why use it**
+
+    -   Reorders columns **without media queries** and with high client support (great for Outlook desktop).
+    -   Mobile still stacks columns in **source order**; the visual desktop order is swapped by `dir`.
+
+-   **Key styles in this pattern**
+
+    -   `.column-wrapper { font-size:0; text-align:center; }`
+        -   `font-size:0` removes the whitespace between `inline-block` columns.
+        -   Centering helps with odd client spacing.
+    -   `.column { display:inline-block; width:100%; max-width:300px; vertical-align:middle; }`
+        -   `inline-block` lets columns sit side-by-side; `max-width` caps each at ~half of a 600px container.
+        -   `vertical-align:middle` keeps uneven column heights visually aligned.
+    -   `.padding { padding:20px; }`
+        -   Put spacing on **inner td**, not on the outer wrapper (safer in Outlook).
+
+-   **Accessibility**
+
+    -   Use `role="presentation"` on layout tables.
+    -   Ensure **reading order** in the HTML matches the order you want screen readers to follow (dir flips _visual_ order, not DOM order).
+
+-   **Client quirks & tips**
+
+    -   **Outlook desktop**: this dir trick works; keep the whole layout inside the 600px **ghost table** wrapper for consistent centering.
+    -   **Gmail / Apple Mail**: respect `dir`; still add responsive media queries if you need extra mobile tweaks.
+    -   Add `dir="ltr"` on any column that contains **Latin text** or numbers; otherwise symbols, punctuation, and inline icons can appear mirrored or repositioned.
+    -   Avoid margins for gutters; use **cell padding** or a spacer cell if you must create visible gaps.
+
+-   **Images**
+
+    -   Use both attribute + inline CSS for sizing:
+        ```html
+        <img
+        	width="260"
+        	style="width:100%; max-width:260px; height:auto; display:block; border:0"
+        	alt="Image Description"
+        />
+        ```
+    -   Wrap images in `<a>` to expand the tap area.
+
+-   **Optional media query refinement**
+    ```css
+    @media screen and (max-width: 599.98px) {
+    	.column-wrapper {
+    		padding: 15px 0 !important;
+    	}
+    	.padding {
+    		padding: 5px 20px 0 20px !important;
+    	}
+    	.column {
+    		max-width: 100% !important;
+    	} /* force full width if needed */
+    }
+    ```
+
+````markdown
+#### Align Table Columns for MSO (Outlook Desktop)
+
+-   **Why this exists**
+
+    -   Outlook desktop (Word rendering engine) does not always respect `display:inline-block` for columns.
+    -   Solution: wrap each column in an Outlook-only table cell using conditional comments (`<!--[if mso]>` … `<![endif]-->`).
+    -   This creates a predictable side-by-side layout in Outlook without breaking mobile/web clients.
+
+-   **Structure**
+
+    ```html
+    <!--[if mso]>
+      <table width="100%" style="border-spacing:0;" role="presentation">
+        <tr>
+          <td width="300" valign="middle" style="padding:0;">
+    <![endif]-->
+
+    <!-- Column 1 table -->
+    <table
+    	class="column column-one-half"
+    	width="100%"
+    	style="max-width:300px; display:inline-block; vertical-align:middle;"
+    	role="presentation"
+    >
+    	...
+    </table>
+
+    <!--[if mso]>
+          </td>
+          <td width="300" valign="middle" style="padding:0;">
+    <![endif]-->
+
+    <!-- Column 2 table -->
+    <table
+    	class="column column-one-half"
+    	width="100%"
+    	style="max-width:300px; display:inline-block; vertical-align:middle;"
+    	role="presentation"
+    >
+    	...
+    </table>
+
+    <!--[if mso]>
+          </td>
+        </tr>
+      </table>
+    <![endif]-->
+    ```
+````
+
+-   **Key parts**
+
+    -   `<!--[if mso]> ... <![endif]-->`
+        Conditional comments: only Outlook desktop sees this wrapper table.
+    -   `<td width="300" valign="middle">`
+        Defines fixed-width columns and vertical alignment specifically for Outlook.
+    -   Non-Outlook clients use the **inline-block + max-width** responsive pattern as normal.
+
+-   **Best practices**
+
+    -   Keep padding at `0` on Outlook `<td>` wrappers; put spacing inside the **inner column `<td>`** (`.padding` class).
+    -   Use both **attribute + CSS** for widths:
+
+        -   `width="260"` + `style="width:100%; max-width:260px;"` for images.
+        -   `width="100%" max-width:300px; display:inline-block;` for tables.
+
+    -   Vertical alignment:
+
+        -   `valign="middle"` in the MSO `<td>`.
+        -   `vertical-align:middle;` inline CSS in the normal column table.
+
+-   **Fallback behavior**
+
+    -   Mobile clients stack columns naturally because of `width:100%; max-width:300px;`.
+    -   Outlook desktop respects the fixed `width="300"` from the ghost `<td>` cells, ensuring perfect 2-column side-by-side alignment.
+
+-   **TL;DR**
+
+    -   Outlook hates inline-block columns → give it its own ghost table structure with fixed `<td width>` cells.
+    -   Non-Outlook clients ignore the MSO wrappers and just render the responsive columns.
+
+
+dir ltr/rtl can work fine in outlook but we can do it in mso conditionals if we want it only reversed in outlook
