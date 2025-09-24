@@ -831,5 +831,168 @@ How to design for all clients at once?
     -   Outlook hates inline-block columns → give it its own ghost table structure with fixed `<td width>` cells.
     -   Non-Outlook clients ignore the MSO wrappers and just render the responsive columns.
 
-
 dir ltr/rtl can work fine in outlook but we can do it in mso conditionals if we want it only reversed in outlook
+
+### HTML Email Elements
+
+Outlook
+
+-   only 2 diff font weights
+    -   0-599 normal weight, anything 600+ is bold
+-   no cursive families?
+
+## VML in Outlook — Shapes, Images, and Units (Cheat-Sheet + Fixes)
+
+-   **Namespaces you need**
+
+    -   Add this to your `<html …>` if you use `w:anchorlock`:
+        -   `xmlns:w="urn:schemas-microsoft-com:office:word"`
+    -   Already using:
+        -   `xmlns:v="urn:schemas-microsoft-com:vml"` (VML)
+        -   `xmlns:o="urn:schemas-microsoft-com:office:office"` (Office)
+
+-   **px vs pt (Word/VML uses points)**
+
+    -   `16px = 12pt` (web defaults vs Word defaults)
+    -   `px × 0.75 = pt`
+    -   `pt × 1.333 = px`
+    -   In VML `style="width:…; height:…"`: prefer **pt** for Outlook consistency (but px often “works”)
+
+-   **Elements (common)**
+
+    -   `v:rect` — rectangle
+    -   `v:oval` — circle/ellipse
+    -   `v:roundrect` — rounded rectangle (**note:** you had `v:roundreact` → typo)
+    -   `v:image` — image element (VML-only; no `alt`)
+    -   `v:fill` — image/color fill for a shape (used as a child of `v:rect/roundrect`)
+    -   `v:textbox` — text inside a shape (use `inset="l,t,r,b"`)
+    -   `w:anchorlock` — keeps the VML “button” hyperlink from being altered by Outlook
+
+-   **Useful attributes**
+
+    -   `fill="t|f"` / `fillcolor="#RRGGBB"` — background fill on shapes
+    -   `stroke="t|f"` / `strokecolor="#RRGGBB"` / `strokeweight="Xpt"` — borders on shapes
+    -   `arcsize="%"` — corner radius on `v:roundrect` (e.g., `arcsize="40%"`)
+    -   `href="https://…"` — on `v:roundrect` to make the entire shape clickable
+    -   `inset="0,0,0,0"` — padding inside `v:textbox`
+
+-   **Corrected snippets from your examples**
+
+    -   **Solid rectangle (100×100)**
+
+        ```html
+        <!--[if mso]>
+        	<v:rect
+        		fill="t"
+        		fillcolor="#546c94"
+        		stroke="f"
+        		style="width:75pt; height:75pt"
+        	></v:rect>
+        <![endif]-->
+        ```
+
+        -   `100px ≈ 75pt`
+
+    -   **Stroked rectangle**
+
+        ```html
+        <!--[if mso]>
+        	<v:rect
+        		fillcolor="#546c94"
+        		stroke="t"
+        		strokecolor="#00ff00"
+        		strokeweight="6pt"
+        		style="width:56.25pt; height:56.25pt"
+        	>
+        	</v:rect>
+        <![endif]-->
+        ```
+
+        -   `75px ≈ 56.25pt`
+
+    -   **Rounded “button” with centered text**
+
+        ```html
+        <!--[if mso]>
+        	<v:roundrect
+        		href="https://example.com"
+        		style="height:40pt; width:120pt"
+        		arcsize="40%"
+        		fillcolor="#546c49"
+        		strokecolor="#000000"
+        		strokeweight="4pt"
+        	>
+        		<w:anchorlock />
+        		<v:textbox inset="0,0,0,0">
+        			<center style="font-family:Arial, Helvetica, sans-serif; font-weight:400; font-size:18pt; color:#ffffff; line-height:20pt;">
+        				BUTTON
+        			</center>
+        		</v:textbox>
+        	</v:roundrect>
+        <![endif]-->
+        ```
+
+        -   **Fix:** tag name is `v:roundrect` (not `v:roundreact`)
+        -   Include `xmlns:w="urn:schemas-microsoft-com:office:word"` in `<html …>`
+
+    -   **Plain VML image**
+
+        ```html
+        <!--[if mso]>
+        	<v:image
+        		src="https://…/image.jpg"
+        		style="width:337.5pt; height:249pt"
+        	></v:image>
+        <![endif]-->
+        ```
+
+        -   `450px × 332px` → `337.5pt × 249pt` (approx)
+
+    -   **Rounded rect with image fill (clickable)**
+        ```html
+        <!--[if mso]>
+        	<v:roundrect
+        		stroke="f"
+        		arcsize="6%"
+        		style="width:168.75pt; height:124.5pt"
+        	>
+        		<v:fill
+        			type="frame"
+        			src="https://…/image.jpg"
+        			href="https://example.com/1"
+        		/>
+        		<w:anchorlock />
+        	</v:roundrect>
+        <![endif]-->
+        ```
+        -   Use `type="frame"` to preserve image aspect inside the frame
+        -   Omit non-standard attributes (e.g., `sizes="…"`) — keep it to `type`, `src`, `color`, etc.
+
+-   **Hybrid (fallback) pattern you should pair with VML**
+
+    -   Always include **standard HTML** content as the default; VML inside **MSO conditionals** enhances Outlook only.
+    -   Example button fallback (for non-Outlook clients):
+        ```html
+        <a
+        	href="https://example.com"
+        	style="display:inline-block; background:#546c49; color:#ffffff; text-decoration:none;
+                  font-family:Arial, Helvetica, sans-serif; font-size:18px; line-height:20px;
+                  padding:12px 24px; border-radius:16px;"
+        >
+        	BUTTON
+        </a>
+        ```
+        -   Place the HTML fallback **outside** the `<!--[if mso]>…<![endif]-->` so everyone else sees it.
+
+-   **General VML tips**
+
+    -   Wrap all VML in `<!--[if mso]> … <![endif]-->`.
+    -   Prefer **pt** for `width/height/strokeweight`; keep colors hex.
+    -   If you need background images in containers, consider the classic VML background technique:
+        -   `v:rect` with `v:fill type="frame" src="…"` and `mso-width-percent` / `mso-height-percent` tricks (advanced).
+    -   VML can’t do `alt` text — ensure your **HTML fallback** includes a normal `<img>` with `alt`.
+
+-   **Troubleshooting**
+    -   **VML not rendering?** Check namespaces and conditional comments; ensure tags are properly closed.
+    -   **Button text off-center?** Adjust `v:textbox inset` and text `line-height`.
+    -   **Edges look jaggy?** Increase `strokeweight` slightly or reduce contrast; VML anti-aliasing is limited.
